@@ -3,4 +3,8 @@ phases:
   build:
     commands:
       - sam build
-      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --resolve-s3 --capabilities CAPABILITY_IAM --stack-name ServerlessIsland --capabilities CAPABILITY_IAM
+      - sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --resolve-s3 --stack-name ServerlessIsland --capabilities CAPABILITY_IAM
+  post_build:
+    commands:
+      - export WEBSITE_BUCKET=$(aws cloudformation describe-stacks --stack-name ServerlessIsland --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucketName'].OutputValue" --output text)
+      - aws s3 sync public/ s3://$WEBSITE_BUCKET --delete
