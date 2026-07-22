@@ -7,4 +7,6 @@ phases:
   post_build:
     commands:
       - export WEBSITE_BUCKET=$(aws cloudformation describe-stacks --stack-name ServerlessIsland --query "Stacks[0].Outputs[?OutputKey=='WebsiteBucketName'].OutputValue" --output text)
+      - export API_URL=$(aws cloudformation describe-stacks --stack-name ServerlessIsland --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" --output text)
+      - 'sed -i "s|apiBaseUrl: \".*\"|apiBaseUrl: \"$API_URL\"|" public/config.js'
       - aws s3 sync public/ s3://$WEBSITE_BUCKET --delete
