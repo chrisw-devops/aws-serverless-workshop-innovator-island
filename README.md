@@ -2,7 +2,7 @@
 
 A compact serverless theme-park operations app inspired by the Innovator Island workshop. It keeps the same core idea, a park dashboard backed by managed AWS services, but trims it into a deployable demo focused on:
 
-- S3 static website hosting
+- Private S3 static asset bucket served through CloudFront Origin Access Control
 - API Gateway HTTP API
 - Lambda request handling and scheduled simulation
 - DynamoDB attraction, event, and booking state
@@ -14,7 +14,7 @@ A compact serverless theme-park operations app inspired by the Innovator Island 
 serverless-island-ops/
   template.yaml        # AWS SAM infrastructure
   src/                 # Python Lambda handlers
-  public/              # Static S3 website
+  public/              # Static website assets
 ```
 
 ## Deploy
@@ -36,13 +36,21 @@ window.ISLAND_CONFIG = {
 EOF
 ```
 
-Upload the static site to the generated website bucket:
+Upload the static site to the generated private website bucket:
 
 ```bash
 aws s3 sync public/ s3://REPLACE_WITH_WebsiteBucketName_OUTPUT/ --delete
 ```
 
-Open the `WebsiteUrl` output in a browser.
+Invalidate the CloudFront cache after changing frontend files:
+
+```bash
+aws cloudfront create-invalidation \
+  --distribution-id REPLACE_WITH_CloudFrontDistributionId_OUTPUT \
+  --paths '/*'
+```
+
+Open the `WebsiteUrl` output in a browser. The S3 bucket itself remains private and should not allow public access.
 
 ## Run locally
 
