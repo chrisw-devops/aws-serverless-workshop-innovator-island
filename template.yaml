@@ -89,6 +89,32 @@ Resources:
         - AttributeName: sk
           KeyType: RANGE
 
+  DeploymentFailureTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Serverless Island deployment failures
+
+  Api5xxAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Triggers when the deployed API returns a server error.
+      Namespace: AWS/ApiGateway
+      MetricName: 5xx
+      Dimensions:
+        - Name: ApiId
+          Value: !Ref IslandApi
+        - Name: Stage
+          Value: '$default'
+      Statistic: Sum
+      Period: 60
+      EvaluationPeriods: 1
+      DatapointsToAlarm: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref DeploymentFailureTopic
+
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -201,3 +227,9 @@ Outputs:
   MediaBucketName:
     Description: S3 bucket for guest photo uploads.
     Value: !Ref MediaBucket
+  DeploymentFailureTopicArn:
+    Description: Subscribe the Agent Doctor event forwarder to this SNS topic.
+    Value: !Ref DeploymentFailureTopic
+  Api5xxAlarmName:
+    Description: CloudWatch alarm monitoring API Gateway server errors.
+    Value: !Ref Api5xxAlarm

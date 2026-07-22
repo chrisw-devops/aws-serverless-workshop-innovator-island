@@ -79,3 +79,13 @@ Local uploads are written to `.local/uploads/`. Local state is stored in `.local
 - `POST /api/photos/presign` returns a presigned S3 upload URL.
 
 The first API request seeds DynamoDB with sample attractions and events. The scheduled simulator Lambda then adjusts attraction wait times every two minutes.
+
+## Deployment health check
+
+Run the release health check with the deployed `ApiUrl` stack output:
+
+```bash
+./scripts/deployment-healthcheck.sh REPLACE_WITH_ApiUrl_OUTPUT
+```
+
+API Gateway server errors also trigger `Api5xxAlarm`, which publishes to the `DeploymentFailureTopicArn` stack output. An external deployment remediation system can subscribe a forwarder to that topic.

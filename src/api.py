@@ -90,6 +90,7 @@ EVENTS = [
 def handler(event, _context):
     method = event.get("requestContext", {}).get("http", {}).get("method", "")
     path = event.get("rawPath", "/")
+    query = event.get("queryStringParameters") or {}
 
     if method == "OPTIONS":
         return response(204, None)
@@ -98,7 +99,7 @@ def handler(event, _context):
         seed_if_needed()
 
         if method == "GET" and path == "/api/attractions":
-            return response(200, {"attractions": list_attractions()})
+            return response(200, {"attractions": list_attractions(query.get("status"))})
 
         if method == "GET" and path == "/api/events":
             return response(200, {"events": list_events()})
@@ -123,7 +124,18 @@ def handler(event, _context):
     except ValueError as exc:
         return response(400, {"message": str(exc)})
     except Exception as exc:
-        print(f"Unhandled error: {exc}")
+        print(
+            json.dumps(
+                {
+                    "level": "ERROR",
+                    "event": "api_request_failed",
+                    "method": method,
+                    "path": path,
+                    "errorType": type(exc).__name__,
+                    "message": str(exc),
+                }
+            )
+        )
         return response(500, {"message": "Internal server error"})
 
 
@@ -143,7 +155,18 @@ def seed_if_needed():
             batch.put_item(Item={"pk": f"EVENT#{today}", "sk": f"{event['time']}#{event['id']}", **event})
 
 
-def list_attractions():
+def list_attractions(status=None):
+    if status:
+        allowed_statuses = {"operating", "boarding", "delayed", "maintenance", "closed"}
+        if status not in allowed_statuses:
+            raise ValueError("Invalid attraction status")
+
+        result = table.query(
+            IndexName="RideStatusIndex",
+            KeyConditionExpression=Key("status").eq(status),
+        )
+        return sorted(result.get("Items", []), key=lambda item: item["name"])
+
     result = table.query(KeyConditionExpression=Key("pk").eq("ATTRACTION"))
     return sorted(result.get("Items", []), key=lambda item: item["name"])
 
