@@ -1,7 +1,0 @@
-[
-  {
-      "DetailType": "outage",
-      "Source": "themepark.rides",
-      "Detail": "{\"rideId\":\"ride-000\",\"type\":\"Emergency\",\"description\":\"Test alert\"}"
-  }
-]

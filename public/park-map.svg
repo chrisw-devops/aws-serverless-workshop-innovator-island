@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">Serverless Island operations map</title>
+  <desc id="desc">A stylized island map with four attraction zones and walking paths.</desc>
+  <rect width="960" height="720" fill="#cfe3ea"/>
+  <path d="M115 437C71 336 107 218 203 158c97-60 198-19 286-60 109-51 245-19 313 87 71 111 54 270-35 370-95 107-254 129-397 101-118-23-211-117-255-219Z" fill="#eef5df"/>
+  <path d="M188 426c73-87 152-136 262-125 109 11 215-2 313-75" fill="none" stroke="#d4bf85" stroke-width="28" stroke-linecap="round"/>
+  <path d="M208 501c91-47 189-43 292-30 93 12 168-14 224-89" fill="none" stroke="#d4bf85" stroke-width="24" stroke-linecap="round"/>
+  <path d="M257 181c58 55 91 112 100 188" fill="none" stroke="#d4bf85" stroke-width="22" stroke-linecap="round"/>
+  <circle cx="258" cy="176" r="82" fill="#f6a43a"/>
+  <circle cx="258" cy="176" r="51" fill="#ffe0a7"/>
+  <path d="M258 95v162M177 176h162" stroke="#8d4e13" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="696" cy="223" r="86" fill="#4781b8"/>
+  <path d="M632 222c43-47 86-47 129 0-43 47-86 47-129 0Z" fill="#d8effa"/>
+  <circle cx="696" cy="222" r="24" fill="#1d5f8f"/>
+  <rect x="552" y="420" width="152" height="112" rx="18" fill="#9b6bc7"/>
+  <path d="M583 397h90l31 23H552l31-23Z" fill="#6b4590"/>
+  <circle cx="599" cy="476" r="17" fill="#f4e9ff"/>
+  <circle cx="655" cy="476" r="17" fill="#f4e9ff"/>
+  <circle cx="361" cy="512" r="94" fill="#56a676"/>
+  <path d="M313 533c35-76 69-76 103 0M300 489c48-45 96-45 144 0" fill="none" stroke="#e8f6df" stroke-width="16" stroke-linecap="round"/>
+  <rect x="106" y="604" width="748" height="44" rx="22" fill="#8fb7c2"/>
+  <text x="140" y="633" fill="#14324a" font-family="Arial, sans-serif" font-size="24" font-weight="700">Main Loop</text>
+  <g font-family="Arial, sans-serif" font-weight="800" font-size="24" fill="#14324a">
+    <text x="177" y="298">Aurora Drop</text>
+    <text x="626" y="348">Reef Runner</text>
+    <text x="523" y="570">Orbit Foundry</text>
+    <text x="273" y="653">Kinetic Grove</text>
+  </g>
+</svg>

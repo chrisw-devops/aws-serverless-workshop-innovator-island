@@ -1,12 +1,73 @@
-## Welcome to the Innovator Island workshop!
+# Serverless Island Ops
 
-![InnovatorIsland](./images/innovator-island_logo.png)
+A compact serverless theme-park operations app inspired by the Innovator Island workshop. It keeps the same core idea, a park dashboard backed by managed AWS services, but trims it into a deployable demo focused on:
 
-For workshop instructions, visit [AWS Workshop Studio](https://catalog.us-east-1.prod.workshops.aws/workshops/74d0f3be-7108-4bba-8136-00617a988535)
+- S3 static website hosting
+- API Gateway HTTP API
+- Lambda request handling and scheduled simulation
+- DynamoDB attraction, event, and booking state
+- S3 guest photo uploads through presigned URLs
 
-### Have an idea for this workshop? Found a bug? ###
+## Project layout
 
-If you have an idea for a module or feature in this workshop, or you have found a bug or need to report a problem, let us know!
+```text
+serverless-island-ops/
+  template.yaml        # AWS SAM infrastructure
+  src/                 # Python Lambda handlers
+  public/              # Static S3 website
+```
 
-- [Request a feature](https://github.com/aws-samples/aws-serverless-workshop-innovator-island/issues/new?assignees=&labels=&template=workshop-feature-request.md&title=)
-- [Report an issue](https://github.com/aws-samples/aws-serverless-workshop-innovator-island/issues/new?assignees=&labels=&template=bug_report.md&title=)
+## Deploy
+
+Prerequisites: AWS CLI, AWS SAM CLI, and configured AWS credentials.
+
+```bash
+sam build
+sam deploy --guided
+```
+
+After deployment, create the frontend runtime config from the stack output:
+
+```bash
+cat > public/config.js <<'EOF'
+window.ISLAND_CONFIG = {
+  apiBaseUrl: "REPLACE_WITH_ApiUrl_OUTPUT"
+};
+EOF
+```
+
+Upload the static site to the generated website bucket:
+
+```bash
+aws s3 sync public/ s3://REPLACE_WITH_WebsiteBucketName_OUTPUT/ --delete
+```
+
+Open the `WebsiteUrl` output in a browser.
+
+## Run locally
+
+This repo includes a local dev server for testing without AWS or Docker. It serves the static frontend and emulates the API with a JSON file under `.local/`.
+
+```bash
+python3 local_server.py
+```
+
+Open:
+
+```text
+http://127.0.0.1:5173
+```
+
+Local uploads are written to `.local/uploads/`. Local state is stored in `.local/data.json`.
+
+## API
+
+- `GET /api/attractions` returns current attraction status and wait times.
+- `PATCH /api/attractions/{id}` updates an attraction status or wait time.
+- `GET /api/stats` returns dashboard counters.
+- `GET /api/events` returns today's operations log.
+- `GET /api/bookings` returns today's virtual queue bookings.
+- `POST /api/bookings` creates a virtual queue return window.
+- `POST /api/photos/presign` returns a presigned S3 upload URL.
+
+The first API request seeds DynamoDB with sample attractions and events. The scheduled simulator Lambda then adjusts attraction wait times every two minutes.

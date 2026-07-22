@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Serverless Island Ops</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Serverless Island Ops</p>
+        <h1>Park command center</h1>
+      </div>
+      <div class="status-pill" id="connectionStatus">Connecting</div>
+    </header>
+
+    <main class="layout">
+      <section class="map-panel" aria-label="Park operations map">
+        <img src="park-map.svg" alt="Stylized map of Serverless Island attractions" class="park-map">
+        <div class="quick-stats" id="stats"></div>
+      </section>
+
+      <section class="workbench">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Live attractions</p>
+            <h2>Queue and capacity</h2>
+          </div>
+          <button id="refreshButton" class="icon-button" title="Refresh data" aria-label="Refresh data">↻</button>
+        </div>
+        <div class="attraction-grid" id="attractions"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Virtual queue</p>
+            <h2>Reserve a return window</h2>
+          </div>
+        </div>
+        <form id="bookingForm" class="form-grid">
+          <label>
+            Guest name
+            <input name="partyName" autocomplete="name" required maxlength="80">
+          </label>
+          <label>
+            Party size
+            <input name="partySize" type="number" min="1" max="12" value="2" required>
+          </label>
+          <label>
+            Attraction
+            <select name="attractionId" required></select>
+          </label>
+          <button type="submit">Create reservation</button>
+        </form>
+        <div class="booking-list" id="bookings"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Guest media</p>
+            <h2>Upload ride photo</h2>
+          </div>
+        </div>
+        <form id="photoForm" class="upload-row">
+          <input name="photo" type="file" accept="image/png,image/jpeg,image/webp" required>
+          <button type="submit">Upload</button>
+        </form>
+        <p class="upload-state" id="uploadState">No upload selected.</p>
+      </section>
+
+      <section class="panel schedule">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Today</p>
+            <h2>Operations log</h2>
+          </div>
+        </div>
+        <div id="events"></div>
+      </section>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
