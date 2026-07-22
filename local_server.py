@@ -7,7 +7,7 @@ import random
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 
 ROOT = Path(__file__).parent
@@ -73,9 +73,10 @@ class LocalHandler(BaseHTTPRequestHandler):
         self.send_json({}, status=204)
 
     def do_GET(self):
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
         if path.startswith("/api/"):
-            self.handle_api("GET", path)
+            self.handle_api("GET", path, parse_qs(parsed.query))
             return
         self.serve_static(path)
 
@@ -96,11 +97,16 @@ class LocalHandler(BaseHTTPRequestHandler):
         target.write_bytes(self.rfile.read(length))
         self.send_json({"ok": True, "path": str(target.relative_to(ROOT))})
 
-    def handle_api(self, method, path):
+    def handle_api(self, method, path, query=None):
         data = load_data()
+        query = query or {}
         try:
             if method == "GET" and path == "/api/attractions":
-                return self.send_json({"attractions": sorted(data["attractions"], key=lambda item: item["name"])})
+                attractions = data["attractions"]
+                status = query.get("status", [None])[0]
+                if status:
+                    attractions = [item for item in attractions if item["status"] == status]
+                return self.send_json({"attractions": sorted(attractions, key=lambda item: item["name"])})
 
             if method == "GET" and path == "/api/events":
                 return self.send_json({"events": data["events"]})

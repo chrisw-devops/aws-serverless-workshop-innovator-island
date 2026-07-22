@@ -35,7 +35,7 @@
 
     try {
       const [attractions, stats, bookings, events] = await Promise.all([
-        request("/attractions"),
+        request("/attractions?status=operating"),
         request("/stats"),
         request("/bookings"),
         request("/events"),
